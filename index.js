@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { db, Unapproved, Users, Bidders, Tasks } = require("./config");
+const { db, Unapproved, Users, Bidders, Tasks, Notices } = require("./config");
 const {
   addDoc,
   getDocs,
@@ -13,6 +13,24 @@ const {
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+//START OF NOTICES CRUD
+
+app.get("/notices", async (req, res) => {
+  try {
+    const snapshot = await getDocs(Notices);
+    const notices = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    res.send(notices);
+  } catch (error) {
+    console.error("Error getting notices ", error);
+    res.status(500).send({ error: "Error getting notices" });
+  }
+});
+
+//END OF NOTICES CRUD
 
 //START OF TASKS CRUD
 
